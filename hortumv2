@@ -101,8 +101,8 @@ ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 -- RGB BORDER FRAME
 local Border = Instance.new("Frame")
-Border.Size = UDim2.new(0,320,0,280)
-Border.Position = UDim2.new(0.5,-160,0.5,-140)
+Border.Size = UDim2.new(0,340,0,280)  -- biraz genişlettim
+Border.Position = UDim2.new(0.5,-170,0.5,-140)
 Border.BorderSizePixel = 0
 Border.Parent = ScreenGui
 
@@ -136,7 +136,7 @@ Title.Parent = MainFrame
 
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0.8,0,0,35)
-ToggleButton.Position = UDim2.new(0.1,0,0.12,0)
+ToggleButton.Position = UDim2.new(0.1,0,0.15,0)
 ToggleButton.Text = "Ring Parts Off"
 ToggleButton.BackgroundColor3 = Color3.fromRGB(30,30,30)
 ToggleButton.TextColor3 = Color3.new(1,1,1)
@@ -146,7 +146,7 @@ ToggleButton.Parent = MainFrame
 
 local DecreaseRadius = Instance.new("TextButton")
 DecreaseRadius.Size = UDim2.new(0.15,0,0,35)
-DecreaseRadius.Position = UDim2.new(0.1,0,0.3,0)
+DecreaseRadius.Position = UDim2.new(0.1,0,0.35,0)
 DecreaseRadius.Text = "<"
 DecreaseRadius.BackgroundColor3 = Color3.fromRGB(30,30,30)
 DecreaseRadius.TextColor3 = Color3.new(1,1,1)
@@ -154,7 +154,7 @@ DecreaseRadius.Parent = MainFrame
 
 local IncreaseRadius = Instance.new("TextButton")
 IncreaseRadius.Size = UDim2.new(0.15,0,0,35)
-IncreaseRadius.Position = UDim2.new(0.75,0,0.3,0)
+IncreaseRadius.Position = UDim2.new(0.75,0,0.35,0)
 IncreaseRadius.Text = ">"
 IncreaseRadius.BackgroundColor3 = Color3.fromRGB(30,30,30)
 IncreaseRadius.TextColor3 = Color3.new(1,1,1)
@@ -162,26 +162,26 @@ IncreaseRadius.Parent = MainFrame
 
 local RadiusDisplay = Instance.new("TextLabel")
 RadiusDisplay.Size = UDim2.new(0.4,0,0,35)
-RadiusDisplay.Position = UDim2.new(0.3,0,0.3,0)
+RadiusDisplay.Position = UDim2.new(0.3,0,0.35,0)
 RadiusDisplay.Text = "Radius: 50"
 RadiusDisplay.BackgroundColor3 = Color3.fromRGB(20,20,20)
 RadiusDisplay.TextColor3 = Color3.new(1,1,1)
 RadiusDisplay.Parent = MainFrame
 
--- MOD BUTONLARI (Tornado, Heart)
+-- MOD BUTONLARI
 local TornadoBtn = Instance.new("TextButton")
-TornadoBtn.Size = UDim2.new(0.3,0,0,30)
-TornadoBtn.Position = UDim2.new(0.05,0,0.48,0)
+TornadoBtn.Size = UDim2.new(0.25,0,0,30)
+TornadoBtn.Position = UDim2.new(0.05,0,0.55,0)
 TornadoBtn.Text = "Tornado"
-TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50) -- aktif başlangıç
+TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)  -- aktif başlangıç
 TornadoBtn.TextColor3 = Color3.new(1,1,1)
 TornadoBtn.Font = Enum.Font.GothamBold
 TornadoBtn.TextSize = 14
 TornadoBtn.Parent = MainFrame
 
 local HeartBtn = Instance.new("TextButton")
-HeartBtn.Size = UDim2.new(0.3,0,0,30)
-HeartBtn.Position = UDim2.new(0.37,0,0.48,0)
+HeartBtn.Size = UDim2.new(0.25,0,0,30)
+HeartBtn.Position = UDim2.new(0.32,0,0.55,0)
 HeartBtn.Text = "Heart"
 HeartBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
 HeartBtn.TextColor3 = Color3.new(1,1,1)
@@ -189,52 +189,31 @@ HeartBtn.Font = Enum.Font.GothamBold
 HeartBtn.TextSize = 14
 HeartBtn.Parent = MainFrame
 
--- Tornado alt modları (H ve V)
-local TornadoH = Instance.new("TextButton")
-TornadoH.Size = UDim2.new(0.1,0,0,30)
-TornadoH.Position = UDim2.new(0.69,0,0.48,0)
-TornadoH.Text = "H"
-TornadoH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-TornadoH.TextColor3 = Color3.new(1,1,1)
-TornadoH.Font = Enum.Font.GothamBold
-TornadoH.TextSize = 16
-TornadoH.Parent = MainFrame
+-- Vertical butonları (her mod için ayrı)
+local TornadoVerticalBtn = Instance.new("TextButton")
+TornadoVerticalBtn.Size = UDim2.new(0.15,0,0,30)
+TornadoVerticalBtn.Position = UDim2.new(0.59,0,0.55,0)
+TornadoVerticalBtn.Text = "T-V"
+TornadoVerticalBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+TornadoVerticalBtn.TextColor3 = Color3.new(1,1,1)
+TornadoVerticalBtn.Font = Enum.Font.GothamBold
+TornadoVerticalBtn.TextSize = 14
+TornadoVerticalBtn.Parent = MainFrame
 
-local TornadoV = Instance.new("TextButton")
-TornadoV.Size = UDim2.new(0.1,0,0,30)
-TornadoV.Position = UDim2.new(0.8,0,0.48,0)
-TornadoV.Text = "V"
-TornadoV.BackgroundColor3 = Color3.fromRGB(30,30,30)
-TornadoV.TextColor3 = Color3.new(1,1,1)
-TornadoV.Font = Enum.Font.GothamBold
-TornadoV.TextSize = 16
-TornadoV.Parent = MainFrame
-
--- Heart alt modları (H ve V)
-local HeartH = Instance.new("TextButton")
-HeartH.Size = UDim2.new(0.1,0,0,30)
-HeartH.Position = UDim2.new(0.69,0,0.58,0)
-HeartH.Text = "H"
-HeartH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-HeartH.TextColor3 = Color3.new(1,1,1)
-HeartH.Font = Enum.Font.GothamBold
-HeartH.TextSize = 16
-HeartH.Parent = MainFrame
-
-local HeartV = Instance.new("TextButton")
-HeartV.Size = UDim2.new(0.1,0,0,30)
-HeartV.Position = UDim2.new(0.8,0,0.58,0)
-HeartV.Text = "V"
-HeartV.BackgroundColor3 = Color3.fromRGB(30,30,30)
-HeartV.TextColor3 = Color3.new(1,1,1)
-HeartV.Font = Enum.Font.GothamBold
-HeartV.TextSize = 16
-HeartV.Parent = MainFrame
+local HeartVerticalBtn = Instance.new("TextButton")
+HeartVerticalBtn.Size = UDim2.new(0.15,0,0,30)
+HeartVerticalBtn.Position = UDim2.new(0.76,0,0.55,0)
+HeartVerticalBtn.Text = "H-V"
+HeartVerticalBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+HeartVerticalBtn.TextColor3 = Color3.new(1,1,1)
+HeartVerticalBtn.Font = Enum.Font.GothamBold
+HeartVerticalBtn.TextSize = 14
+HeartVerticalBtn.Parent = MainFrame
 
 -- Watermark
 local Watermark = Instance.new("TextLabel")
 Watermark.Size = UDim2.new(1,0,0,20)
-Watermark.Position = UDim2.new(0,0,1,-30)
+Watermark.Position = UDim2.new(0,0,1,-40)
 Watermark.Text = "Super Ring"
 Watermark.TextColor3 = Color3.fromRGB(255,255,255)
 Watermark.BackgroundTransparency = 1
@@ -253,11 +232,12 @@ MinimizeButton.Font = Enum.Font.GothamBold
 MinimizeButton.TextSize = 16
 MinimizeButton.Parent = MainFrame
 
+-- Minimize functionality
 local minimized = false
 MinimizeButton.MouseButton1Click:Connect(function()
     minimized = not minimized
     if minimized then
-        Border:TweenSize(UDim2.new(0,320,0,40), "Out", "Quad", 0.3, true)
+        Border:TweenSize(UDim2.new(0,340,0,40), "Out", "Quad", 0.3, true)
         MinimizeButton.Text = "+"
         ToggleButton.Visible = false
         DecreaseRadius.Visible = false
@@ -265,14 +245,12 @@ MinimizeButton.MouseButton1Click:Connect(function()
         RadiusDisplay.Visible = false
         TornadoBtn.Visible = false
         HeartBtn.Visible = false
-        TornadoH.Visible = false
-        TornadoV.Visible = false
-        HeartH.Visible = false
-        HeartV.Visible = false
+        TornadoVerticalBtn.Visible = false
+        HeartVerticalBtn.Visible = false
         Watermark.Visible = false
         Title.Visible = false
     else
-        Border:TweenSize(UDim2.new(0,320,0,280), "Out", "Quad", 0.3, true)
+        Border:TweenSize(UDim2.new(0,340,0,280), "Out", "Quad", 0.3, true)
         MinimizeButton.Text = "-"
         ToggleButton.Visible = true
         DecreaseRadius.Visible = true
@@ -280,17 +258,15 @@ MinimizeButton.MouseButton1Click:Connect(function()
         RadiusDisplay.Visible = true
         TornadoBtn.Visible = true
         HeartBtn.Visible = true
-        TornadoH.Visible = true
-        TornadoV.Visible = true
-        HeartH.Visible = true
-        HeartV.Visible = true
+        TornadoVerticalBtn.Visible = true
+        HeartVerticalBtn.Visible = true
         Watermark.Visible = true
         Title.Visible = true
     end
     playSound("12221967")
 end)
 
--- Draggable
+-- Make GUI draggable
 local dragging
 local dragInput
 local dragStart
@@ -331,17 +307,15 @@ end)
 -- RING PARTS LOGIC
 --------------------------------------------------
 local radius = 50
-local height = 100
+local height = 100  -- dikey salınım genliği
 local rotationSpeed = 1
 local attractionStrength = 1000
 local ringPartsEnabled = false
-local currentMode = "tornado" -- "tornado" veya "heart"
+local currentMode = "tornado"  -- "tornado" veya "heart"
+local tornadoVertical = false   -- tornado modu için dikey açık/kapalı
+local heartVertical = false     -- heart modu için dikey açık/kapalı
 
--- Her mod için H/V durumları
-local tornadoMode = "V" -- varsayılan tornado V (dikey salınımlı)
-local heartMode = "H"   -- varsayılan heart H (düz)
-
-local partAngles = {}
+local partAngles = {}  -- her part için açı değeri
 
 local function RetainPart(Part)
     if Part:IsA("BasePart") and not Part.Anchored and Part:IsDescendantOf(Workspace) then
@@ -380,7 +354,7 @@ end
 Workspace.DescendantAdded:Connect(addPart)
 Workspace.DescendantRemoving:Connect(removePart)
 
--- Tornado güncellemesi (H ve V seçeneğine göre)
+-- Tornado güncellemesi (dikey seçenekli)
 local function tornadoUpdate()
     local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if humanoidRootPart then
@@ -388,23 +362,25 @@ local function tornadoUpdate()
         for _, part in pairs(parts) do
             if part.Parent and not part.Anchored then
                 local pos = part.Position
+                -- Yatay düzlemde dönüş
                 local distance = (Vector3.new(pos.X, center.Y, pos.Z) - center).Magnitude
                 local angle = math.atan2(pos.Z - center.Z, pos.X - center.X)
                 local newAngle = angle + math.rad(rotationSpeed)
                 
-                -- Yükseklik hesabı
-                local yOffset
-                if tornadoMode == "H" then
-                    yOffset = 0 -- sabit yükseklik
-                else -- V modu
-                    yOffset = height * (math.abs(math.sin((pos.Y - center.Y) / height))) -- orijinal tornado dikey salınımı
+                -- Hedef pozisyon (yatay)
+                local targetX = center.X + math.cos(newAngle) * math.min(radius, distance)
+                local targetZ = center.Z + math.sin(newAngle) * math.min(radius, distance)
+                local targetY
+                
+                if tornadoVertical then
+                    -- Dikey hareket: sinüs ile yukarı aşağı
+                    targetY = center.Y + math.sin(newAngle * 3) * height * 0.5
+                else
+                    -- Sabit yükseklik (oyuncu yüksekliği)
+                    targetY = center.Y
                 end
                 
-                local targetPos = Vector3.new(
-                    center.X + math.cos(newAngle) * math.min(radius, distance),
-                    center.Y + yOffset,
-                    center.Z + math.sin(newAngle) * math.min(radius, distance)
-                )
+                local targetPos = Vector3.new(targetX, targetY, targetZ)
                 local directionToTarget = (targetPos - part.Position).unit
                 part.Velocity = directionToTarget * attractionStrength
             end
@@ -412,7 +388,7 @@ local function tornadoUpdate()
     end
 end
 
--- Kalp güncellemesi (H ve V seçeneğine göre)
+-- Kalp güncellemesi (dikey seçenekli)
 local function heartUpdate()
     local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return end
@@ -426,13 +402,17 @@ local function heartUpdate()
             if t > 2 * math.pi then t = t - 2 * math.pi end
             partAngles[part] = t
             
+            -- Kalp parametrik denklemi (yatay düzlemde)
             local scale = radius * 0.5
             local x = scale * 16 * math.sin(t)^3
             local z = scale * (13 * math.cos(t) - 5 * math.cos(2*t) - 2 * math.cos(3*t) - math.cos(4*t))
-            local y = 0
+            local y
             
-            if heartMode == "V" then
-                y = math.sin(t * 3) * height * 0.3
+            if heartVertical then
+                -- Dikey hareket: sinüs ile yukarı aşağı (t ile)
+                y = math.sin(t * 3) * height * 0.5
+            else
+                y = 0
             end
             
             local targetPos = center + Vector3.new(x, y, z)
@@ -442,6 +422,7 @@ local function heartUpdate()
     end
 end
 
+-- Heartbeat'te moda göre güncelleme
 RunService.Heartbeat:Connect(function()
     if not ringPartsEnabled then return end
     
@@ -472,22 +453,14 @@ IncreaseRadius.MouseButton1Click:Connect(function()
     playSound("12221967")
 end)
 
--- Mod seçim butonları
+-- Mod butonları
 TornadoBtn.MouseButton1Click:Connect(function()
     currentMode = "tornado"
     TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
     HeartBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    -- Tornado alt butonlarını güncelle
-    if tornadoMode == "H" then
-        TornadoH.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        TornadoV.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    else
-        TornadoH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        TornadoV.BackgroundColor3 = Color3.fromRGB(50,205,50)
-    end
-    -- Heart alt butonlarını sönük yap (ama görünür kalsın)
-    HeartH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    HeartV.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    -- Tornado vertical butonunun rengini durumuna göre ayarla
+    TornadoVerticalBtn.BackgroundColor3 = tornadoVertical and Color3.fromRGB(50,205,50) or Color3.fromRGB(30,30,30)
+    HeartVerticalBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)  -- heart vertical pasif görünsün
     playSound("12221967")
 end)
 
@@ -495,95 +468,31 @@ HeartBtn.MouseButton1Click:Connect(function()
     currentMode = "heart"
     HeartBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
     TornadoBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    -- Heart alt butonlarını güncelle
-    if heartMode == "H" then
-        HeartH.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        HeartV.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    else
-        HeartH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        HeartV.BackgroundColor3 = Color3.fromRGB(50,205,50)
-    end
-    -- Tornado alt butonlarını sönük yap
-    TornadoH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    TornadoV.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    -- Heart vertical butonunun rengini durumuna göre ayarla
+    HeartVerticalBtn.BackgroundColor3 = heartVertical and Color3.fromRGB(50,205,50) or Color3.fromRGB(30,30,30)
+    TornadoVerticalBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)  -- tornado vertical pasif görünsün
     playSound("12221967")
 end)
 
--- Tornado alt butonları
-TornadoH.MouseButton1Click:Connect(function()
+-- Tornado vertical butonu
+TornadoVerticalBtn.MouseButton1Click:Connect(function()
     if currentMode == "tornado" then
-        tornadoMode = "H"
-        TornadoH.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        TornadoV.BackgroundColor3 = Color3.fromRGB(30,30,30)
+        tornadoVertical = not tornadoVertical
+        TornadoVerticalBtn.BackgroundColor3 = tornadoVertical and Color3.fromRGB(50,205,50) or Color3.fromRGB(30,30,30)
         playSound("12221967")
     else
-        -- Tornado modunda değilken tıklanırsa otomatik tornado moduna geç ve H seç
-        currentMode = "tornado"
-        tornadoMode = "H"
-        TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        HeartBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        TornadoH.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        TornadoV.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        HeartH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        HeartV.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        playSound("12221967")
+        -- Tornado modunda değilse uyarı sesi veya bir şey yapılabilir
+        playSound("12221967")  -- yine de ses çalsın
     end
 end)
 
-TornadoV.MouseButton1Click:Connect(function()
-    if currentMode == "tornado" then
-        tornadoMode = "V"
-        TornadoV.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        TornadoH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        playSound("12221967")
-    else
-        currentMode = "tornado"
-        tornadoMode = "V"
-        TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        HeartBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        TornadoV.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        TornadoH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        HeartH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        HeartV.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        playSound("12221967")
-    end
-end)
-
--- Heart alt butonları
-HeartH.MouseButton1Click:Connect(function()
+-- Heart vertical butonu
+HeartVerticalBtn.MouseButton1Click:Connect(function()
     if currentMode == "heart" then
-        heartMode = "H"
-        HeartH.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        HeartV.BackgroundColor3 = Color3.fromRGB(30,30,30)
+        heartVertical = not heartVertical
+        HeartVerticalBtn.BackgroundColor3 = heartVertical and Color3.fromRGB(50,205,50) or Color3.fromRGB(30,30,30)
         playSound("12221967")
     else
-        currentMode = "heart"
-        heartMode = "H"
-        HeartBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        TornadoBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        HeartH.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        HeartV.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        TornadoH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        TornadoV.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        playSound("12221967")
-    end
-end)
-
-HeartV.MouseButton1Click:Connect(function()
-    if currentMode == "heart" then
-        heartMode = "V"
-        HeartV.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        HeartH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        playSound("12221967")
-    else
-        currentMode = "heart"
-        heartMode = "V"
-        HeartBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        TornadoBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        HeartV.BackgroundColor3 = Color3.fromRGB(50,205,50)
-        HeartH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        TornadoH.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        TornadoV.BackgroundColor3 = Color3.fromRGB(30,30,30)
         playSound("12221967")
     end
 end)
