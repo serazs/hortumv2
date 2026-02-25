@@ -99,14 +99,12 @@ ScreenGui.Name = "SuperRingPartsGUI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
--- RGB BORDER FRAME (genişletildi)
 local Border = Instance.new("Frame")
 Border.Size = UDim2.new(0,340,0,280)
 Border.Position = UDim2.new(0.5,-170,0.5,-140)
 Border.BorderSizePixel = 0
 Border.Parent = ScreenGui
 
--- İÇ FRAME
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(1,-4,1,-4)
 MainFrame.Position = UDim2.new(0,2,0,2)
@@ -114,7 +112,6 @@ MainFrame.BackgroundColor3 = Color3.fromRGB(0,0,0)
 MainFrame.BorderSizePixel = 0
 MainFrame.Parent = Border
 
--- RGB LOOP
 task.spawn(function()
     local h = 0
     while true do
@@ -172,7 +169,7 @@ local TornadoBtn = Instance.new("TextButton")
 TornadoBtn.Size = UDim2.new(0.25,0,0,30)
 TornadoBtn.Position = UDim2.new(0.05,0,0.55,0)
 TornadoBtn.Text = "Tornado"
-TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)  -- aktif başlangıç
+TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)  -- aktif
 TornadoBtn.TextColor3 = Color3.new(1,1,1)
 TornadoBtn.Font = Enum.Font.GothamBold
 TornadoBtn.TextSize = 14
@@ -346,7 +343,7 @@ end
 Workspace.DescendantAdded:Connect(addPart)
 Workspace.DescendantRemoving:Connect(removePart)
 
--- Tornado motoru (dikey desteğiyle)
+-- Tornado motoru
 local function tornadoUpdate(vertical)
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
@@ -371,7 +368,7 @@ local function tornadoUpdate(vertical)
     end
 end
 
--- Kalp motoru (dikey desteğiyle)
+-- Kalp motoru
 local function heartUpdate(vertical)
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
@@ -452,7 +449,7 @@ TornadoVerticalBtn.MouseButton1Click:Connect(function()
         TornadoVerticalBtn.BackgroundColor3 = tornadoVertical and Color3.fromRGB(50,205,50) or Color3.fromRGB(30,30,30)
         playSound("12221967")
     else
-        playSound("12221967") -- sadece ses, işlem yok
+        playSound("12221967")
     end
 end)
 
