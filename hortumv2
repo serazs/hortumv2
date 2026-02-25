@@ -38,27 +38,33 @@ modeButton.TextSize = 18
 modeButton.Parent = screenGui
 
 -- ========== Değişkenler ==========
-local enabled = true  -- başlangıçta açık
-local mode = "Tornado"  -- "Tornado" veya "Heart"
-local radius = 50
-local height = 100
-local rotationSpeed = 3
-local attractionStrength = 5000  -- ÇOK GÜÇLÜ
+local enabled = true
+local mode = "Tornado"
+local radius = 60  -- Biraz büyüttüm
+local height = 80
+local rotationSpeed = 1  -- Daha yavaş dönüş ki şekil belli olsun
+local attractionStrength = 5000
 
 -- Tüm part'leri topla
 local parts = {}
 local partData = {}  -- part -> {angle, speed}
+local nextAngle = 0  -- Yeni part'lara sırayla açı vermek için
+local angleStep = math.rad(10)  -- Her part arasındaki açı farkı (derece cinsinden 10 derece)
 
--- Part ekleme fonksiyonu (anchored olsa bile ekle, sonra hallederiz)
+-- Part ekleme fonksiyonu
 local function addPart(part)
     if part:IsA("BasePart") and part:IsDescendantOf(Workspace) then
-        -- Karakterin kendi part'lerini ekleme (opsiyonel)
         if part:IsDescendantOf(LocalPlayer.Character) then return end
-        -- Daha önce eklenmemişse ekle
         for _, p in ipairs(parts) do
             if p == part then return end
         end
         table.insert(parts, part)
+        -- Yeni part'a sıradaki açıyı ata
+        partData[part] = {
+            angle = nextAngle,
+            speed = 0.8 + math.random() * 0.4  -- Hızları yakın olsun ki düzen bozulmasın
+        }
+        nextAngle = (nextAngle + angleStep) % (2 * math.pi)
     end
 end
 
@@ -67,14 +73,12 @@ for _, part in ipairs(Workspace:GetDescendants()) do
     addPart(part)
 end
 
--- Yeni eklenen part'leri de yakala
 Workspace.DescendantAdded:Connect(addPart)
 
--- ========== Kalp fonksiyonu ==========
+-- ========== Kalp fonksiyonu (daha belirgin) ==========
 local function getHeartPoint(t, center, scale)
-    -- scale: kalbin büyüklüğü (radius ile orantılı)
-    local s = scale / 12
-    -- Parametrik kalp denklemi (XZ düzleminde)
+    -- scale'i biraz büyütelim ki kalp daha iri olsun
+    local s = scale / 10  -- Eskiden /12 idi, şimdi /10 yaptım
     local x = 16 * math.sin(t)^3 * s
     local z = (13 * math.cos(t) - 5 * math.cos(2*t) - 2 * math.cos(3*t) - math.cos(4*t)) * s
     return Vector3.new(center.X + x, center.Y, center.Z + z)
@@ -84,62 +88,43 @@ end
 RunService.Heartbeat:Connect(function()
     if not enabled then return end
     
-    -- Karakter hala var mı?
     if not LocalPlayer.Character or not humanoidRootPart then return end
     
     local center = humanoidRootPart.Position
     local time = tick()
     
-    -- Part'lar için veri oluştur (eğer yoksa)
-    for _, part in ipairs(parts) do
-        if part and part.Parent and not partData[part] then
-            partData[part] = {
-                angle = math.random() * 2 * math.pi,
-                speed = 0.5 + math.random() * 1.5
-            }
-        end
-    end
-    
-    -- Her part'ı işle
     for part, data in pairs(partData) do
-        -- Part hâlâ geçerli mi?
         if part and part.Parent then
-            -- Anchored'ı kapat (zorla)
+            -- Part'ı hareket ettirilebilir yap
             pcall(function() part.Anchored = false end)
-            -- Collide'ı kapat (birbirlerine takılmasınlar)
             pcall(function() part.CanCollide = false end)
-            -- Fizik özelliklerini sıfırla (sürtünme vs)
             pcall(function() part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0) end)
             
             local targetPos
             
             if mode == "Tornado" then
-                -- Tornado: dairesel hareket + yukarı çekiş
                 local pos = part.Position
                 local angle = math.atan2(pos.Z - center.Z, pos.X - center.X)
                 local newAngle = angle + math.rad(rotationSpeed * 10)
-                -- Hedef: daire üzerinde bir nokta
                 targetPos = Vector3.new(
                     center.X + math.cos(newAngle) * radius,
-                    center.Y + height * math.sin(time * 2 + angle),  -- yukarı aşağı
+                    center.Y + height * math.sin(time * 2 + angle),
                     center.Z + math.sin(newAngle) * radius
                 )
             else -- Heart
-                -- Açıyı güncelle (dönme efekti)
+                -- Açıyı güncelle (dönme efekti) - yavaş dönüyor
                 data.angle = data.angle + math.rad(rotationSpeed * data.speed)
                 if data.angle > 2 * math.pi then data.angle = data.angle - 2 * math.pi end
                 
                 local heartPoint = getHeartPoint(data.angle, center, radius)
-                -- Yükseklik dalgalanması
-                local yOffset = height * 0.3 * math.sin(time * 2 + data.angle)
+                -- Yükseklik dalgalanması (azalttım ki şekil daha net)
+                local yOffset = height * 0.2 * math.sin(time * 1.5 + data.angle)
                 targetPos = Vector3.new(heartPoint.X, center.Y + yOffset, heartPoint.Z)
             end
             
-            -- Part'i hedefe çek
             local direction = (targetPos - part.Position).unit
             part.Velocity = direction * attractionStrength
         else
-            -- Part yok olmuşsa veriyi temizle
             partData[part] = nil
         end
     end
@@ -167,9 +152,8 @@ modeButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- ========== Bildirim ==========
 StarterGui:SetCore("SendNotification", {
     Title = "Süper Hortum",
-    Text = "Aktif! Tüm part'ler çekiliyor.",
+    Text = "Aktif! Kalp şekli iyileştirildi.",
     Duration = 3
 })
