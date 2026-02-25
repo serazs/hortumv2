@@ -173,7 +173,7 @@ local TornadoBtn = Instance.new("TextButton")
 TornadoBtn.Size = UDim2.new(0.25,0,0,30)
 TornadoBtn.Position = UDim2.new(0.05,0,0.55,0)
 TornadoBtn.Text = "Tornado"
-TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)  -- aktif başlangıç
+TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)  -- aktif
 TornadoBtn.TextColor3 = Color3.new(1,1,1)
 TornadoBtn.Font = Enum.Font.GothamBold
 TornadoBtn.TextSize = 14
@@ -189,7 +189,7 @@ HeartBtn.Font = Enum.Font.GothamBold
 HeartBtn.TextSize = 14
 HeartBtn.Parent = MainFrame
 
--- Vertical butonları (her mod için ayrı)
+-- Vertical butonları
 local TornadoVerticalBtn = Instance.new("TextButton")
 TornadoVerticalBtn.Size = UDim2.new(0.15,0,0,30)
 TornadoVerticalBtn.Position = UDim2.new(0.59,0,0.55,0)
@@ -304,19 +304,19 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 --------------------------------------------------
--- RING PARTS LOGIC (DÜZGÜN DİKEY)
+-- RING PARTS LOGIC (DÜZELTİLMİŞ DİKEY)
 --------------------------------------------------
 local radius = 50
-local height = 100  -- dikey salınım genliği
+local height = 100  -- dikey genlik (artırdım)
 local rotationSpeed = 1
-local attractionStrength = 1000
+local attractionStrength = 2000  -- çekim gücünü artırdım
 local ringPartsEnabled = false
-local currentMode = "tornado"  -- "tornado" veya "heart"
+local currentMode = "tornado"
 local tornadoVertical = false
 local heartVertical = false
 
-local partAngles = {}  -- her part için açı değeri (kalp modu için)
-local timeCounter = 0  -- dikey hareket için ortak zaman
+local partAngles = {}  -- her part için açı (heart modunda kullanılır)
+local time = 0  -- global zaman (dikey hareket için)
 
 local function RetainPart(Part)
     if Part:IsA("BasePart") and not Part.Anchored and Part:IsDescendantOf(Workspace) then
@@ -355,30 +355,28 @@ end
 Workspace.DescendantAdded:Connect(addPart)
 Workspace.DescendantRemoving:Connect(removePart)
 
--- Tornado güncellemesi (dikey seçenekli)
-local function tornadoUpdate()
+-- Tornado güncellemesi
+local function tornadoUpdate(dt)
     local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if humanoidRootPart then
         local center = humanoidRootPart.Position
+        -- Dikey ofset (global zaman ile sinüs)
+        local verticalOffset = 0
+        if tornadoVertical then
+            verticalOffset = math.sin(time * 3) * height
+        end
+        
         for _, part in pairs(parts) do
             if part.Parent and not part.Anchored then
                 local pos = part.Position
-                -- Yatay düzlemde dönüş
                 local distance = (Vector3.new(pos.X, center.Y, pos.Z) - center).Magnitude
                 local angle = math.atan2(pos.Z - center.Z, pos.X - center.X)
                 local newAngle = angle + math.rad(rotationSpeed)
                 
-                -- Hedef pozisyon (yatay)
+                -- Yatay hedef
                 local targetX = center.X + math.cos(newAngle) * math.min(radius, distance)
                 local targetZ = center.Z + math.sin(newAngle) * math.min(radius, distance)
-                local targetY
-                
-                if tornadoVertical then
-                    -- Dikey hareket: zamanla sinüs (hepsi aynı anda)
-                    targetY = center.Y + math.sin(timeCounter * 3) * height * 0.5
-                else
-                    targetY = center.Y  -- sabit yükseklik
-                end
+                local targetY = center.Y + verticalOffset  -- dikey ofset ekle
                 
                 local targetPos = Vector3.new(targetX, targetY, targetZ)
                 local directionToTarget = (targetPos - part.Position).unit
@@ -388,12 +386,16 @@ local function tornadoUpdate()
     end
 end
 
--- Kalp güncellemesi (dikey seçenekli)
-local function heartUpdate()
+-- Kalp güncellemesi
+local function heartUpdate(dt)
     local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return end
     local center = humanoidRootPart.Position
     local speed = 0.03
+    local verticalOffset = 0
+    if heartVertical then
+        verticalOffset = math.sin(time * 3) * height
+    end
     
     for _, part in pairs(parts) do
         if part.Parent and not part.Anchored then
@@ -402,35 +404,27 @@ local function heartUpdate()
             if t > 2 * math.pi then t = t - 2 * math.pi end
             partAngles[part] = t
             
-            -- Kalp parametrik denklemi (yatay düzlemde)
+            -- Kalp parametrik denklemi
             local scale = radius * 0.5
             local x = scale * 16 * math.sin(t)^3
             local z = scale * (13 * math.cos(t) - 5 * math.cos(2*t) - 2 * math.cos(3*t) - math.cos(4*t))
-            local y
             
-            if heartVertical then
-                -- Dikey hareket: zamanla sinüs (hepsi aynı anda)
-                y = math.sin(timeCounter * 3) * height * 0.5
-            else
-                y = 0
-            end
-            
-            local targetPos = center + Vector3.new(x, y, z)
+            local targetPos = center + Vector3.new(x, center.Y + verticalOffset, z)  -- dikey ofset eklendi
             local direction = (targetPos - part.Position).unit
             part.Velocity = direction * attractionStrength
         end
     end
 end
 
--- Heartbeat'te zamanı artır ve moda göre güncelleme yap
+-- Heartbeat'te moda göre güncelleme
 RunService.Heartbeat:Connect(function(dt)
-    timeCounter = timeCounter + dt  -- zamanı artır (saniye cinsinden)
+    time = time + dt  -- global zamanı güncelle
     if not ringPartsEnabled then return end
     
     if currentMode == "tornado" then
-        tornadoUpdate()
+        tornadoUpdate(dt)
     elseif currentMode == "heart" then
-        heartUpdate()
+        heartUpdate(dt)
     end
 end)
 
@@ -473,18 +467,16 @@ HeartBtn.MouseButton1Click:Connect(function()
     playSound("12221967")
 end)
 
--- Tornado vertical butonu
 TornadoVerticalBtn.MouseButton1Click:Connect(function()
     if currentMode == "tornado" then
         tornadoVertical = not tornadoVertical
         TornadoVerticalBtn.BackgroundColor3 = tornadoVertical and Color3.fromRGB(50,205,50) or Color3.fromRGB(30,30,30)
         playSound("12221967")
     else
-        playSound("12221967")  -- sadece ses
+        playSound("12221967")
     end
 end)
 
--- Heart vertical butonu
 HeartVerticalBtn.MouseButton1Click:Connect(function()
     if currentMode == "heart" then
         heartVertical = not heartVertical
