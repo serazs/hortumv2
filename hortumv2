@@ -101,8 +101,8 @@ ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 -- RGB BORDER FRAME
 local Border = Instance.new("Frame")
-Border.Size = UDim2.new(0,260,0,250)  -- biraz büyüttüm yeni butonlar için
-Border.Position = UDim2.new(0.5,-130,0.5,-125)
+Border.Size = UDim2.new(0,280,0,280)  -- biraz daha büyüttüm
+Border.Position = UDim2.new(0.5,-140,0.5,-140)
 Border.BorderSizePixel = 0
 Border.Parent = ScreenGui
 
@@ -136,7 +136,7 @@ Title.Parent = MainFrame
 
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0.8,0,0,35)
-ToggleButton.Position = UDim2.new(0.1,0,0.2,0)
+ToggleButton.Position = UDim2.new(0.1,0,0.15,0)
 ToggleButton.Text = "Ring Parts Off"
 ToggleButton.BackgroundColor3 = Color3.fromRGB(30,30,30)
 ToggleButton.TextColor3 = Color3.new(1,1,1)
@@ -146,7 +146,7 @@ ToggleButton.Parent = MainFrame
 
 local DecreaseRadius = Instance.new("TextButton")
 DecreaseRadius.Size = UDim2.new(0.2,0,0,35)
-DecreaseRadius.Position = UDim2.new(0.1,0,0.4,0)
+DecreaseRadius.Position = UDim2.new(0.1,0,0.3,0)
 DecreaseRadius.Text = "<"
 DecreaseRadius.BackgroundColor3 = Color3.fromRGB(30,30,30)
 DecreaseRadius.TextColor3 = Color3.new(1,1,1)
@@ -154,7 +154,7 @@ DecreaseRadius.Parent = MainFrame
 
 local IncreaseRadius = Instance.new("TextButton")
 IncreaseRadius.Size = UDim2.new(0.2,0,0,35)
-IncreaseRadius.Position = UDim2.new(0.7,0,0.4,0)
+IncreaseRadius.Position = UDim2.new(0.7,0,0.3,0)
 IncreaseRadius.Text = ">"
 IncreaseRadius.BackgroundColor3 = Color3.fromRGB(30,30,30)
 IncreaseRadius.TextColor3 = Color3.new(1,1,1)
@@ -162,7 +162,7 @@ IncreaseRadius.Parent = MainFrame
 
 local RadiusDisplay = Instance.new("TextLabel")
 RadiusDisplay.Size = UDim2.new(0.4,0,0,35)
-RadiusDisplay.Position = UDim2.new(0.3,0,0.4,0)
+RadiusDisplay.Position = UDim2.new(0.3,0,0.3,0)
 RadiusDisplay.Text = "Radius: 50"
 RadiusDisplay.BackgroundColor3 = Color3.fromRGB(20,20,20)
 RadiusDisplay.TextColor3 = Color3.new(1,1,1)
@@ -171,9 +171,9 @@ RadiusDisplay.Parent = MainFrame
 -- MOD BUTONLARI
 local TornadoBtn = Instance.new("TextButton")
 TornadoBtn.Size = UDim2.new(0.4,0,0,30)
-TornadoBtn.Position = UDim2.new(0.05,0,0.6,0)
+TornadoBtn.Position = UDim2.new(0.05,0,0.45,0)
 TornadoBtn.Text = "Tornado"
-TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)  -- aktif renk (başlangıçta tornado aktif)
+TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)  -- aktif
 TornadoBtn.TextColor3 = Color3.new(1,1,1)
 TornadoBtn.Font = Enum.Font.GothamBold
 TornadoBtn.TextSize = 14
@@ -181,7 +181,7 @@ TornadoBtn.Parent = MainFrame
 
 local HeartBtn = Instance.new("TextButton")
 HeartBtn.Size = UDim2.new(0.4,0,0,30)
-HeartBtn.Position = UDim2.new(0.55,0,0.6,0)
+HeartBtn.Position = UDim2.new(0.55,0,0.45,0)
 HeartBtn.Text = "Heart"
 HeartBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
 HeartBtn.TextColor3 = Color3.new(1,1,1)
@@ -189,10 +189,22 @@ HeartBtn.Font = Enum.Font.GothamBold
 HeartBtn.TextSize = 14
 HeartBtn.Parent = MainFrame
 
+-- Yatay/Dikey butonu (sadece Heart modunda görünecek)
+local OrientationBtn = Instance.new("TextButton")
+OrientationBtn.Size = UDim2.new(0.3,0,0,25)
+OrientationBtn.Position = UDim2.new(0.35,0,0.55,0)
+OrientationBtn.Text = "Yatay"  -- başlangıç yatay
+OrientationBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
+OrientationBtn.TextColor3 = Color3.new(1,1,1)
+OrientationBtn.Font = Enum.Font.GothamBold
+OrientationBtn.TextSize = 12
+OrientationBtn.Visible = false  -- başlangıçta gizli (tornado aktif)
+OrientationBtn.Parent = MainFrame
+
 -- Watermark
 local Watermark = Instance.new("TextLabel")
 Watermark.Size = UDim2.new(1,0,0,20)
-Watermark.Position = UDim2.new(0,0,1,-50)  -- butonlardan sonra alta kaydı
+Watermark.Position = UDim2.new(0,0,1,-60)
 Watermark.Text = "Super Ring"
 Watermark.TextColor3 = Color3.fromRGB(255,255,255)
 Watermark.BackgroundTransparency = 1
@@ -216,7 +228,7 @@ local minimized = false
 MinimizeButton.MouseButton1Click:Connect(function()
     minimized = not minimized
     if minimized then
-        Border:TweenSize(UDim2.new(0,260,0,40), "Out", "Quad", 0.3, true)
+        Border:TweenSize(UDim2.new(0,280,0,40), "Out", "Quad", 0.3, true)
         MinimizeButton.Text = "+"
         ToggleButton.Visible = false
         DecreaseRadius.Visible = false
@@ -224,10 +236,11 @@ MinimizeButton.MouseButton1Click:Connect(function()
         RadiusDisplay.Visible = false
         TornadoBtn.Visible = false
         HeartBtn.Visible = false
+        OrientationBtn.Visible = false
         Watermark.Visible = false
         Title.Visible = false
     else
-        Border:TweenSize(UDim2.new(0,260,0,250), "Out", "Quad", 0.3, true)
+        Border:TweenSize(UDim2.new(0,280,0,280), "Out", "Quad", 0.3, true)
         MinimizeButton.Text = "-"
         ToggleButton.Visible = true
         DecreaseRadius.Visible = true
@@ -235,6 +248,7 @@ MinimizeButton.MouseButton1Click:Connect(function()
         RadiusDisplay.Visible = true
         TornadoBtn.Visible = true
         HeartBtn.Visible = true
+        -- Orientation butonu sadece heart modunda gösterilecek, aşağıda ayarlanacak
         Watermark.Visible = true
         Title.Visible = true
     end
@@ -287,9 +301,10 @@ local rotationSpeed = 1
 local attractionStrength = 1000
 local ringPartsEnabled = false
 local currentMode = "tornado"  -- "tornado" veya "heart"
+local heartOrientation = "yatay"  -- "yatay" veya "dikey" (kalp modu için)
 
--- Tornado modu için açılar (her part için)
-local partAngles = {}  -- sadece heart modunda kullanılacak
+-- Tornado modu için açılar (heart modunda partAngles kullanılacak)
+local partAngles = {}
 
 local function RetainPart(Part)
     if Part:IsA("BasePart") and not Part.Anchored and Part:IsDescendantOf(Workspace) then
@@ -308,7 +323,6 @@ local function addPart(part)
     if RetainPart(part) then
         if not table.find(parts, part) then
             table.insert(parts, part)
-            -- Heart modu için rastgele başlangıç açısı ata
             partAngles[part] = math.random() * 2 * math.pi
         end
     end
@@ -329,7 +343,7 @@ end
 Workspace.DescendantAdded:Connect(addPart)
 Workspace.DescendantRemoving:Connect(removePart)
 
--- Tornado güncellemesi (eski kod)
+-- Tornado güncellemesi
 local function tornadoUpdate()
     local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if humanoidRootPart then
@@ -352,12 +366,12 @@ local function tornadoUpdate()
     end
 end
 
--- Kalp güncellemesi (yeni mod)
+-- Kalp güncellemesi (yatay/dikey seçeneği ile)
 local function heartUpdate()
     local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not humanoidRootPart then return end
     local center = humanoidRootPart.Position
-    local speed = 0.03  -- kalp üzerinde dönüş hızı
+    local speed = 0.03
     
     for _, part in pairs(parts) do
         if part.Parent and not part.Anchored then
@@ -366,20 +380,57 @@ local function heartUpdate()
             if t > 2 * math.pi then t = t - 2 * math.pi end
             partAngles[part] = t
             
-            -- Kalp parametrik denklemi (yatay düzlemde)
-            local scale = radius * 0.5  -- radius ile orantılı boyut
+            local scale = radius * 0.5
+            -- Kalp parametrik denklemi (x,z düzleminde)
             local x = scale * 16 * math.sin(t)^3
             local z = scale * (13 * math.cos(t) - 5 * math.cos(2*t) - 2 * math.cos(3*t) - math.cos(4*t))
-            local y = 0  -- sabit yükseklik (oyuncunun yüksekliğinde kalır)
             
-            local targetPos = center + Vector3.new(x, y, z)
+            local targetPos
+            if heartOrientation == "yatay" then
+                -- Yatay: x ve z ekseninde kalp, y sabit (oyuncu yüksekliği)
+                targetPos = center + Vector3.new(x, 0, z)
+            else
+                -- Dikey: x ve y ekseninde kalp (oyuncunun önünde dikey düzlem), z sabit
+                -- Oyuncunun baktığı yöne göre ayarlayalım: ön yön (lookVector) baz alınabilir
+                local look = humanoidRootPart.CFrame.LookVector
+                -- Basitçe x ve y değişsin, z sabit olsun ama oyuncunun önünde dursun istiyoruz.
+                -- Bunun için, kalp şeklini oyuncunun ön-arka ve yukarı-aşağı ekseninde oluşturalım.
+                -- Yani x yerine lookVector * x, y yerine y, z yerine rightVector * z gibi bir dönüşüm yapabiliriz.
+                -- Ama basit olsun diye, dikey düzlemde x (sağ-sol) ve y (yukarı-aşağı) kullanalım, z (ileri-geri) sabit olsun.
+                -- Oyuncunun önünde olması için z'ye bir offset ekleyelim.
+                local forwardOffset = radius * 0.5  -- öne doğru kaydırma
+                targetPos = center + Vector3.new(x, y, forwardOffset)  -- x sağ-sol, y yukarı-aşağı, z ileri
+                -- Ancak bu şekilde kalp oyuncunun yüzüne dik değil, dünya koordinatlarında x ekseninde.
+                -- Daha iyisi: oyuncunun sağ ve yukarı vektörlerini kullanarak kalbi onun yönüne göre yerleştirelim.
+                -- Aşağıdaki gibi:
+                -- local right = humanoidRootPart.CFrame.RightVector
+                -- local up = humanoidRootPart.CFrame.UpVector
+                -- targetPos = center + right * x + up * z  (burada z aslında kalp denklemindeki z'yi up yönünde kullanıyoruz)
+                -- Ama kalp denklemindeki z, yatayda bir değerdi, şimdi onu dikeyde kullanacağız.
+                -- En basit: dikey düzlemde x ve y'yi kullan, z'yi sabit al, ama oyuncunun yönüne göre döndürelim.
+            end
+            
+            -- Daha iyi bir dikey kalp: oyuncunun baktığı yönde, sağ ve yukarı vektörlerini kullanarak.
+            if heartOrientation == "dikey" then
+                local right = humanoidRootPart.CFrame.RightVector
+                local up = humanoidRootPart.CFrame.UpVector
+                local look = humanoidRootPart.CFrame.LookVector
+                -- Kalp denklemindeki x sağ-sol, z yukarı-aşağı olsun (z'yi up yönünde kullan)
+                -- Yani: targetPos = center + right * x + up * z + look * (radius * 0.3) (öne doğru hafif kaydırma)
+                local forwardOffset = look * (radius * 0.3)
+                targetPos = center + right * x + up * z + forwardOffset
+            else
+                -- yatay: normal
+                targetPos = center + Vector3.new(x, 0, z)
+            end
+            
             local direction = (targetPos - part.Position).unit
             part.Velocity = direction * attractionStrength
         end
     end
 end
 
--- Heartbeat'te moda göre güncelleme yap
+-- Heartbeat'te moda göre güncelleme
 RunService.Heartbeat:Connect(function()
     if not ringPartsEnabled then return end
     
@@ -415,6 +466,7 @@ TornadoBtn.MouseButton1Click:Connect(function()
     currentMode = "tornado"
     TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
     HeartBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    OrientationBtn.Visible = false  -- tornado modunda gizle
     playSound("12221967")
 end)
 
@@ -422,6 +474,21 @@ HeartBtn.MouseButton1Click:Connect(function()
     currentMode = "heart"
     HeartBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
     TornadoBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    OrientationBtn.Visible = true  -- heart modunda göster
+    playSound("12221967")
+end)
+
+-- Yatay/Dikey butonu
+OrientationBtn.MouseButton1Click:Connect(function()
+    if heartOrientation == "yatay" then
+        heartOrientation = "dikey"
+        OrientationBtn.Text = "Dikey"
+        OrientationBtn.BackgroundColor3 = Color3.fromRGB(255,165,0)  -- turuncu
+    else
+        heartOrientation = "yatay"
+        OrientationBtn.Text = "Yatay"
+        OrientationBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)  -- yeşil
+    end
     playSound("12221967")
 end)
 
@@ -460,4 +527,4 @@ local function SendChatMessage(message)
     end
 end
 
-SendChatMessage("")
+SendChatMessage("mert femboy")
