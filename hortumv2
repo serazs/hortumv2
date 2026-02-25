@@ -101,8 +101,8 @@ ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 -- RGB BORDER FRAME
 local Border = Instance.new("Frame")
-Border.Size = UDim2.new(0,230,0,250)
-Border.Position = UDim2.new(0.5,-115,0.5,-125)
+Border.Size = UDim2.new(0,260,0,250)  -- biraz büyüttüm yeni butonlar için
+Border.Position = UDim2.new(0.5,-130,0.5,-125)
 Border.BorderSizePixel = 0
 Border.Parent = ScreenGui
 
@@ -118,7 +118,7 @@ MainFrame.Parent = Border
 task.spawn(function()
     local h = 0
     while true do
-        h = h + 0.01
+        h += 0.01
         if h > 1 then h = 0 end
         Border.BackgroundColor3 = Color3.fromHSV(h,1,1)
         task.wait(0.03)
@@ -134,7 +134,6 @@ Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.Parent = MainFrame
 
--- AÇ/KAPA BUTONU
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0.8,0,0,35)
 ToggleButton.Position = UDim2.new(0.1,0,0.2,0)
@@ -145,21 +144,9 @@ ToggleButton.Font = Enum.Font.GothamBold
 ToggleButton.TextSize = 16
 ToggleButton.Parent = MainFrame
 
--- MOD DEĞİŞTİRME BUTONU
-local ModeButton = Instance.new("TextButton")
-ModeButton.Size = UDim2.new(0.8,0,0,35)
-ModeButton.Position = UDim2.new(0.1,0,0.4,0)
-ModeButton.Text = "Mode: Tornado"
-ModeButton.BackgroundColor3 = Color3.fromRGB(30,30,30)
-ModeButton.TextColor3 = Color3.new(1,1,1)
-ModeButton.Font = Enum.Font.GothamBold
-ModeButton.TextSize = 16
-ModeButton.Parent = MainFrame
-
--- YARIÇAP KONTROLLERİ
 local DecreaseRadius = Instance.new("TextButton")
 DecreaseRadius.Size = UDim2.new(0.2,0,0,35)
-DecreaseRadius.Position = UDim2.new(0.1,0,0.6,0)
+DecreaseRadius.Position = UDim2.new(0.1,0,0.4,0)
 DecreaseRadius.Text = "<"
 DecreaseRadius.BackgroundColor3 = Color3.fromRGB(30,30,30)
 DecreaseRadius.TextColor3 = Color3.new(1,1,1)
@@ -167,7 +154,7 @@ DecreaseRadius.Parent = MainFrame
 
 local IncreaseRadius = Instance.new("TextButton")
 IncreaseRadius.Size = UDim2.new(0.2,0,0,35)
-IncreaseRadius.Position = UDim2.new(0.7,0,0.6,0)
+IncreaseRadius.Position = UDim2.new(0.7,0,0.4,0)
 IncreaseRadius.Text = ">"
 IncreaseRadius.BackgroundColor3 = Color3.fromRGB(30,30,30)
 IncreaseRadius.TextColor3 = Color3.new(1,1,1)
@@ -175,16 +162,37 @@ IncreaseRadius.Parent = MainFrame
 
 local RadiusDisplay = Instance.new("TextLabel")
 RadiusDisplay.Size = UDim2.new(0.4,0,0,35)
-RadiusDisplay.Position = UDim2.new(0.3,0,0.6,0)
+RadiusDisplay.Position = UDim2.new(0.3,0,0.4,0)
 RadiusDisplay.Text = "Radius: 50"
 RadiusDisplay.BackgroundColor3 = Color3.fromRGB(20,20,20)
 RadiusDisplay.TextColor3 = Color3.new(1,1,1)
 RadiusDisplay.Parent = MainFrame
 
+-- MOD BUTONLARI
+local TornadoBtn = Instance.new("TextButton")
+TornadoBtn.Size = UDim2.new(0.4,0,0,30)
+TornadoBtn.Position = UDim2.new(0.05,0,0.6,0)
+TornadoBtn.Text = "Tornado"
+TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)  -- aktif renk (başlangıçta tornado aktif)
+TornadoBtn.TextColor3 = Color3.new(1,1,1)
+TornadoBtn.Font = Enum.Font.GothamBold
+TornadoBtn.TextSize = 14
+TornadoBtn.Parent = MainFrame
+
+local HeartBtn = Instance.new("TextButton")
+HeartBtn.Size = UDim2.new(0.4,0,0,30)
+HeartBtn.Position = UDim2.new(0.55,0,0.6,0)
+HeartBtn.Text = "Heart"
+HeartBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+HeartBtn.TextColor3 = Color3.new(1,1,1)
+HeartBtn.Font = Enum.Font.GothamBold
+HeartBtn.TextSize = 14
+HeartBtn.Parent = MainFrame
+
 -- Watermark
 local Watermark = Instance.new("TextLabel")
 Watermark.Size = UDim2.new(1,0,0,20)
-Watermark.Position = UDim2.new(0,0,1,-20)
+Watermark.Position = UDim2.new(0,0,1,-50)  -- butonlardan sonra alta kaydı
 Watermark.Text = "Super Ring"
 Watermark.TextColor3 = Color3.fromRGB(255,255,255)
 Watermark.BackgroundTransparency = 1
@@ -208,30 +216,32 @@ local minimized = false
 MinimizeButton.MouseButton1Click:Connect(function()
     minimized = not minimized
     if minimized then
-        Border:TweenSize(UDim2.new(0,230,0,40), "Out", "Quad", 0.3, true)
+        Border:TweenSize(UDim2.new(0,260,0,40), "Out", "Quad", 0.3, true)
         MinimizeButton.Text = "+"
         ToggleButton.Visible = false
-        ModeButton.Visible = false
         DecreaseRadius.Visible = false
         IncreaseRadius.Visible = false
         RadiusDisplay.Visible = false
+        TornadoBtn.Visible = false
+        HeartBtn.Visible = false
         Watermark.Visible = false
         Title.Visible = false
     else
-        Border:TweenSize(UDim2.new(0,230,0,250), "Out", "Quad", 0.3, true)
+        Border:TweenSize(UDim2.new(0,260,0,250), "Out", "Quad", 0.3, true)
         MinimizeButton.Text = "-"
         ToggleButton.Visible = true
-        ModeButton.Visible = true
         DecreaseRadius.Visible = true
         IncreaseRadius.Visible = true
         RadiusDisplay.Visible = true
+        TornadoBtn.Visible = true
+        HeartBtn.Visible = true
         Watermark.Visible = true
         Title.Visible = true
     end
     playSound("12221967")
 end)
 
--- Dragging
+-- Make GUI draggable
 local dragging
 local dragInput
 local dragStart
@@ -269,14 +279,17 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 --------------------------------------------------
--- RING PARTS LOGIC (SADECE MOD EKLENDİ)
+-- RING PARTS LOGIC (GÜNCELLENMİŞ)
 --------------------------------------------------
 local radius = 50
 local height = 100
 local rotationSpeed = 1
 local attractionStrength = 1000
 local ringPartsEnabled = false
-local mode = "Tornado" -- "Tornado" veya "Heart"
+local currentMode = "tornado"  -- "tornado" veya "heart"
+
+-- Tornado modu için açılar (her part için)
+local partAngles = {}  -- sadece heart modunda kullanılacak
 
 local function RetainPart(Part)
     if Part:IsA("BasePart") and not Part.Anchored and Part:IsDescendantOf(Workspace) then
@@ -295,6 +308,8 @@ local function addPart(part)
     if RetainPart(part) then
         if not table.find(parts, part) then
             table.insert(parts, part)
+            -- Heart modu için rastgele başlangıç açısı ata
+            partAngles[part] = math.random() * 2 * math.pi
         end
     end
 end
@@ -303,6 +318,7 @@ local function removePart(part)
     local index = table.find(parts, part)
     if index then
         table.remove(parts, index)
+        partAngles[part] = nil
     end
 end
 
@@ -313,85 +329,72 @@ end
 Workspace.DescendantAdded:Connect(addPart)
 Workspace.DescendantRemoving:Connect(removePart)
 
--- Kalp şekli fonksiyonu (t 0-2pi arası)
-local function getHeartPoint(t, center, scale)
-    -- scale: kalbin büyüklüğü (radius ile orantılı)
-    local s = scale / 12  -- 16 birim max, radius 50 ise yaklaşık 4 katı
-    local x = 16 * math.sin(t)^3 * s
-    local z = (13 * math.cos(t) - 5 * math.cos(2*t) - 2 * math.cos(3*t) - math.cos(4*t)) * s
-    return Vector3.new(center.X + x, center.Y, center.Z + z)
-end
-
--- Her part için açı verisi
-local partAngles = {}  -- part -> angle
-
-RunService.Heartbeat:Connect(function()
-    if not ringPartsEnabled then return end
-    
+-- Tornado güncellemesi (eski kod)
+local function tornadoUpdate()
     local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if humanoidRootPart then
         local tornadoCenter = humanoidRootPart.Position
-        local time = tick()
-        
-        -- Yeni part'lar için açı ata
-        for _, part in pairs(parts) do
-            if not partAngles[part] then
-                partAngles[part] = math.random() * 2 * math.pi
-            end
-        end
-        
         for _, part in pairs(parts) do
             if part.Parent and not part.Anchored then
-                local targetPos
-                
-                if mode == "Tornado" then
-                    -- Tornado: dairesel (orijinal mantık)
-                    local pos = part.Position
-                    local distance = (Vector3.new(pos.X, tornadoCenter.Y, pos.Z) - tornadoCenter).Magnitude
-                    local angle = math.atan2(pos.Z - tornadoCenter.Z, pos.X - tornadoCenter.X)
-                    local newAngle = angle + math.rad(rotationSpeed)
-                    targetPos = Vector3.new(
-                        tornadoCenter.X + math.cos(newAngle) * math.min(radius, distance),
-                        tornadoCenter.Y + (height * (math.abs(math.sin((pos.Y - tornadoCenter.Y) / height)))),
-                        tornadoCenter.Z + math.sin(newAngle) * math.min(radius, distance)
-                    )
-                elseif mode == "Heart" then
-                    -- Kalp: part'ın açısını kullan (kalp çizgisi üzerinde dönme)
-                    local angle = partAngles[part]
-                    -- Açıyı zamanla değiştir (dönme efekti)
-                    partAngles[part] = angle + math.rad(rotationSpeed * 2)  -- hızlı dönsün
-                    if partAngles[part] > 2 * math.pi then
-                        partAngles[part] = partAngles[part] - 2 * math.pi
-                    end
-                    
-                    local heartPoint = getHeartPoint(angle, tornadoCenter, radius)
-                    -- Yükseklik: sinüs dalgası (isteğe bağlı, kalp hortumu için)
-                    local yOffset = height * 0.3 * math.sin(time * 2 + angle)
-                    targetPos = Vector3.new(heartPoint.X, tornadoCenter.Y + yOffset, heartPoint.Z)
-                end
-                
+                local pos = part.Position
+                local distance = (Vector3.new(pos.X, tornadoCenter.Y, pos.Z) - tornadoCenter).Magnitude
+                local angle = math.atan2(pos.Z - tornadoCenter.Z, pos.X - tornadoCenter.X)
+                local newAngle = angle + math.rad(rotationSpeed)
+                local targetPos = Vector3.new(
+                    tornadoCenter.X + math.cos(newAngle) * math.min(radius, distance),
+                    tornadoCenter.Y + (height * (math.abs(math.sin((pos.Y - tornadoCenter.Y) / height)))),
+                    tornadoCenter.Z + math.sin(newAngle) * math.min(radius, distance)
+                )
                 local directionToTarget = (targetPos - part.Position).unit
                 part.Velocity = directionToTarget * attractionStrength
             end
         end
     end
+end
+
+-- Kalp güncellemesi (yeni mod)
+local function heartUpdate()
+    local humanoidRootPart = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart then return end
+    local center = humanoidRootPart.Position
+    local speed = 0.03  -- kalp üzerinde dönüş hızı
+    
+    for _, part in pairs(parts) do
+        if part.Parent and not part.Anchored then
+            local t = partAngles[part] or 0
+            t = t + speed
+            if t > 2 * math.pi then t = t - 2 * math.pi end
+            partAngles[part] = t
+            
+            -- Kalp parametrik denklemi (yatay düzlemde)
+            local scale = radius * 0.5  -- radius ile orantılı boyut
+            local x = scale * 16 * math.sin(t)^3
+            local z = scale * (13 * math.cos(t) - 5 * math.cos(2*t) - 2 * math.cos(3*t) - math.cos(4*t))
+            local y = 0  -- sabit yükseklik (oyuncunun yüksekliğinde kalır)
+            
+            local targetPos = center + Vector3.new(x, y, z)
+            local direction = (targetPos - part.Position).unit
+            part.Velocity = direction * attractionStrength
+        end
+    end
+end
+
+-- Heartbeat'te moda göre güncelleme yap
+RunService.Heartbeat:Connect(function()
+    if not ringPartsEnabled then return end
+    
+    if currentMode == "tornado" then
+        tornadoUpdate()
+    elseif currentMode == "heart" then
+        heartUpdate()
+    end
 end)
 
--- Buton işlevleri
+-- GUI buton işlevleri
 ToggleButton.MouseButton1Click:Connect(function()
     ringPartsEnabled = not ringPartsEnabled
     ToggleButton.Text = ringPartsEnabled and "Ring Parts On" or "Ring Parts Off"
     ToggleButton.BackgroundColor3 = ringPartsEnabled and Color3.fromRGB(50, 205, 50) or Color3.fromRGB(30,30,30)
-    playSound("12221967")
-end)
-
-ModeButton.MouseButton1Click:Connect(function()
-    if mode == "Tornado" then
-        mode = "Heart"
-    else
-        mode = "Tornado"
-    end
-    ModeButton.Text = "Mode: " .. mode
     playSound("12221967")
 end)
 
@@ -404,6 +407,21 @@ end)
 IncreaseRadius.MouseButton1Click:Connect(function()
     radius = math.min(1000, radius + 2)
     RadiusDisplay.Text = "Radius: " .. radius
+    playSound("12221967")
+end)
+
+-- Mod butonları
+TornadoBtn.MouseButton1Click:Connect(function()
+    currentMode = "tornado"
+    TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
+    HeartBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    playSound("12221967")
+end)
+
+HeartBtn.MouseButton1Click:Connect(function()
+    currentMode = "heart"
+    HeartBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
+    TornadoBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
     playSound("12221967")
 end)
 
@@ -442,4 +460,4 @@ local function SendChatMessage(message)
     end
 end
 
-SendChatMessage("sa")
+SendChatMessage("")
