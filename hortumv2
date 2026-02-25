@@ -101,7 +101,7 @@ ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 -- RGB BORDER FRAME
 local Border = Instance.new("Frame")
-Border.Size = UDim2.new(0,340,0,280)  -- biraz genişlettim
+Border.Size = UDim2.new(0,340,0,280)
 Border.Position = UDim2.new(0.5,-170,0.5,-140)
 Border.BorderSizePixel = 0
 Border.Parent = ScreenGui
@@ -304,7 +304,7 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 --------------------------------------------------
--- RING PARTS LOGIC
+-- RING PARTS LOGIC (DÜZGÜN DİKEY)
 --------------------------------------------------
 local radius = 50
 local height = 100  -- dikey salınım genliği
@@ -312,10 +312,11 @@ local rotationSpeed = 1
 local attractionStrength = 1000
 local ringPartsEnabled = false
 local currentMode = "tornado"  -- "tornado" veya "heart"
-local tornadoVertical = false   -- tornado modu için dikey açık/kapalı
-local heartVertical = false     -- heart modu için dikey açık/kapalı
+local tornadoVertical = false
+local heartVertical = false
 
-local partAngles = {}  -- her part için açı değeri
+local partAngles = {}  -- her part için açı değeri (kalp modu için)
+local timeCounter = 0  -- dikey hareket için ortak zaman
 
 local function RetainPart(Part)
     if Part:IsA("BasePart") and not Part.Anchored and Part:IsDescendantOf(Workspace) then
@@ -373,11 +374,10 @@ local function tornadoUpdate()
                 local targetY
                 
                 if tornadoVertical then
-                    -- Dikey hareket: sinüs ile yukarı aşağı
-                    targetY = center.Y + math.sin(newAngle * 3) * height * 0.5
+                    -- Dikey hareket: zamanla sinüs (hepsi aynı anda)
+                    targetY = center.Y + math.sin(timeCounter * 3) * height * 0.5
                 else
-                    -- Sabit yükseklik (oyuncu yüksekliği)
-                    targetY = center.Y
+                    targetY = center.Y  -- sabit yükseklik
                 end
                 
                 local targetPos = Vector3.new(targetX, targetY, targetZ)
@@ -409,8 +409,8 @@ local function heartUpdate()
             local y
             
             if heartVertical then
-                -- Dikey hareket: sinüs ile yukarı aşağı (t ile)
-                y = math.sin(t * 3) * height * 0.5
+                -- Dikey hareket: zamanla sinüs (hepsi aynı anda)
+                y = math.sin(timeCounter * 3) * height * 0.5
             else
                 y = 0
             end
@@ -422,8 +422,9 @@ local function heartUpdate()
     end
 end
 
--- Heartbeat'te moda göre güncelleme
-RunService.Heartbeat:Connect(function()
+-- Heartbeat'te zamanı artır ve moda göre güncelleme yap
+RunService.Heartbeat:Connect(function(dt)
+    timeCounter = timeCounter + dt  -- zamanı artır (saniye cinsinden)
     if not ringPartsEnabled then return end
     
     if currentMode == "tornado" then
@@ -458,9 +459,8 @@ TornadoBtn.MouseButton1Click:Connect(function()
     currentMode = "tornado"
     TornadoBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
     HeartBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    -- Tornado vertical butonunun rengini durumuna göre ayarla
     TornadoVerticalBtn.BackgroundColor3 = tornadoVertical and Color3.fromRGB(50,205,50) or Color3.fromRGB(30,30,30)
-    HeartVerticalBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)  -- heart vertical pasif görünsün
+    HeartVerticalBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
     playSound("12221967")
 end)
 
@@ -468,9 +468,8 @@ HeartBtn.MouseButton1Click:Connect(function()
     currentMode = "heart"
     HeartBtn.BackgroundColor3 = Color3.fromRGB(50,205,50)
     TornadoBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    -- Heart vertical butonunun rengini durumuna göre ayarla
     HeartVerticalBtn.BackgroundColor3 = heartVertical and Color3.fromRGB(50,205,50) or Color3.fromRGB(30,30,30)
-    TornadoVerticalBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)  -- tornado vertical pasif görünsün
+    TornadoVerticalBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
     playSound("12221967")
 end)
 
@@ -481,8 +480,7 @@ TornadoVerticalBtn.MouseButton1Click:Connect(function()
         TornadoVerticalBtn.BackgroundColor3 = tornadoVertical and Color3.fromRGB(50,205,50) or Color3.fromRGB(30,30,30)
         playSound("12221967")
     else
-        -- Tornado modunda değilse uyarı sesi veya bir şey yapılabilir
-        playSound("12221967")  -- yine de ses çalsın
+        playSound("12221967")  -- sadece ses
     end
 end)
 
