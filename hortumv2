@@ -442,4 +442,4 @@ local function SendChatMessage(message)
     end
 end
 
-SendChatMessage("mert femboy")
+SendChatMessage("sa")
