@@ -1,146 +1,175 @@
+-- Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
 
 local LocalPlayer = Players.LocalPlayer
+
+-- Karakter bekle
 local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
--- Basit GUI
+-- ========== GUI (Basit Aç/Kapa) ==========
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "KalpHortum"
+screenGui.Name = "HortumGUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 150, 0, 50)
-frame.Position = UDim2.new(0.5, -75, 0.5, -25)
-frame.BackgroundColor3 = Color3.new(0, 0, 0)
-frame.BackgroundTransparency = 0.5
-frame.BorderSizePixel = 0
-frame.Active = true
-frame.Draggable = true
-frame.Parent = screenGui
-
 local button = Instance.new("TextButton")
-button.Size = UDim2.new(1, -10, 1, -10)
-button.Position = UDim2.new(0, 5, 0, 5)
-button.Text = "Kalp Hortum AÇIK"
-button.TextColor3 = Color3.new(1, 1, 1)
-button.BackgroundColor3 = Color3.new(0, 1, 0)
-button.BackgroundTransparency = 0.3
-button.BorderSizePixel = 0
-button.Parent = frame
+button.Size = UDim2.new(0, 150, 0, 50)
+button.Position = UDim2.new(0, 10, 0, 10)
+button.Text = "Hortum Açık"
+button.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+button.TextColor3 = Color3.new(1,1,1)
+button.Font = Enum.Font.GothamBold
+button.TextSize = 20
+button.Parent = screenGui
 
--- Minimize butonu
-local minBtn = Instance.new("TextButton")
-minBtn.Size = UDim2.new(0, 20, 0, 20)
-minBtn.Position = UDim2.new(1, -25, 0, 5)
-minBtn.Text = "-"
-minBtn.TextColor3 = Color3.new(1, 1, 1)
-minBtn.BackgroundColor3 = Color3.new(1, 0, 0)
-minBtn.BorderSizePixel = 0
-minBtn.Parent = frame
+local modeButton = Instance.new("TextButton")
+modeButton.Size = UDim2.new(0, 150, 0, 50)
+modeButton.Position = UDim2.new(0, 10, 0, 70)
+modeButton.Text = "Mod: Tornado"
+modeButton.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
+modeButton.TextColor3 = Color3.new(1,1,1)
+modeButton.Font = Enum.Font.GothamBold
+modeButton.TextSize = 18
+modeButton.Parent = screenGui
 
-local minimized = false
-minBtn.MouseButton1Click:Connect(function()
-    minimized = not minimized
-    if minimized then
-        frame:TweenSize(UDim2.new(0, 30, 0, 30), "Out", "Quad", 0.2)
-        button.Visible = false
-        minBtn.Text = "+"
-        minBtn.Position = UDim2.new(0, 5, 0, 5)
-    else
-        frame:TweenSize(UDim2.new(0, 150, 0, 50), "Out", "Quad", 0.2)
-        button.Visible = true
-        minBtn.Text = "-"
-        minBtn.Position = UDim2.new(1, -25, 0, 5)
-    end
-end)
+-- ========== Değişkenler ==========
+local enabled = true  -- başlangıçta açık
+local mode = "Tornado"  -- "Tornado" veya "Heart"
+local radius = 50
+local height = 100
+local rotationSpeed = 3
+local attractionStrength = 5000  -- ÇOK GÜÇLÜ
 
--- Part toplama
+-- Tüm part'leri topla
 local parts = {}
+local partData = {}  -- part -> {angle, speed}
+
+-- Part ekleme fonksiyonu (anchored olsa bile ekle, sonra hallederiz)
 local function addPart(part)
-    if part:IsA("BasePart") and not part.Anchored and part:IsDescendantOf(Workspace) then
-        -- Karakterin part'lerini alma
+    if part:IsA("BasePart") and part:IsDescendantOf(Workspace) then
+        -- Karakterin kendi part'lerini ekleme (opsiyonel)
         if part:IsDescendantOf(LocalPlayer.Character) then return end
+        -- Daha önce eklenmemişse ekle
+        for _, p in ipairs(parts) do
+            if p == part then return end
+        end
         table.insert(parts, part)
     end
 end
 
-for _, part in pairs(Workspace:GetDescendants()) do
+-- Mevcut tüm part'leri tara
+for _, part in ipairs(Workspace:GetDescendants()) do
     addPart(part)
 end
 
+-- Yeni eklenen part'leri de yakala
 Workspace.DescendantAdded:Connect(addPart)
 
--- Kalp fonksiyonu
+-- ========== Kalp fonksiyonu ==========
 local function getHeartPoint(t, center, scale)
+    -- scale: kalbin büyüklüğü (radius ile orantılı)
     local s = scale / 12
+    -- Parametrik kalp denklemi (XZ düzleminde)
     local x = 16 * math.sin(t)^3 * s
     local z = (13 * math.cos(t) - 5 * math.cos(2*t) - 2 * math.cos(3*t) - math.cos(4*t)) * s
     return Vector3.new(center.X + x, center.Y, center.Z + z)
 end
 
--- Her part için veri
-local partData = {}
-local radius = 50
-local height = 30
-local speed = 2
-local attraction = 1000
-local enabled = true
-
-button.MouseButton1Click:Connect(function()
-    enabled = not enabled
-    if enabled then
-        button.Text = "Kalp Hortum AÇIK"
-        button.BackgroundColor3 = Color3.new(0, 1, 0)
-    else
-        button.Text = "Kalp Hortum KAPALI"
-        button.BackgroundColor3 = Color3.new(1, 0, 0)
-    end
-end)
-
+-- ========== Ana döngü ==========
 RunService.Heartbeat:Connect(function()
     if not enabled then return end
+    
+    -- Karakter hala var mı?
+    if not LocalPlayer.Character or not humanoidRootPart then return end
     
     local center = humanoidRootPart.Position
     local time = tick()
     
-    -- Yeni part'lar için veri
-    for _, part in pairs(parts) do
-        if part.Parent and not part.Anchored then
-            if not partData[part] then
-                partData[part] = {
-                    angle = math.random() * 2 * math.pi,
-                    speed = 0.5 + math.random() * 1.5
-                }
-            end
-        else
-            partData[part] = nil
+    -- Part'lar için veri oluştur (eğer yoksa)
+    for _, part in ipairs(parts) do
+        if part and part.Parent and not partData[part] then
+            partData[part] = {
+                angle = math.random() * 2 * math.pi,
+                speed = 0.5 + math.random() * 1.5
+            }
         end
     end
     
-    -- Hareket
+    -- Her part'ı işle
     for part, data in pairs(partData) do
-        if part.Parent and not part.Anchored then
-            data.angle = data.angle + math.rad(speed * data.speed)
-            if data.angle > 2 * math.pi then data.angle = data.angle - 2 * math.pi end
+        -- Part hâlâ geçerli mi?
+        if part and part.Parent then
+            -- Anchored'ı kapat (zorla)
+            pcall(function() part.Anchored = false end)
+            -- Collide'ı kapat (birbirlerine takılmasınlar)
+            pcall(function() part.CanCollide = false end)
+            -- Fizik özelliklerini sıfırla (sürtünme vs)
+            pcall(function() part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0) end)
             
-            local heartPoint = getHeartPoint(data.angle, center, radius)
-            heartPoint = Vector3.new(heartPoint.X, center.Y + height * math.sin(time * 2 + data.angle), heartPoint.Z)
+            local targetPos
             
-            part.Velocity = (heartPoint - part.Position).unit * attraction
+            if mode == "Tornado" then
+                -- Tornado: dairesel hareket + yukarı çekiş
+                local pos = part.Position
+                local angle = math.atan2(pos.Z - center.Z, pos.X - center.X)
+                local newAngle = angle + math.rad(rotationSpeed * 10)
+                -- Hedef: daire üzerinde bir nokta
+                targetPos = Vector3.new(
+                    center.X + math.cos(newAngle) * radius,
+                    center.Y + height * math.sin(time * 2 + angle),  -- yukarı aşağı
+                    center.Z + math.sin(newAngle) * radius
+                )
+            else -- Heart
+                -- Açıyı güncelle (dönme efekti)
+                data.angle = data.angle + math.rad(rotationSpeed * data.speed)
+                if data.angle > 2 * math.pi then data.angle = data.angle - 2 * math.pi end
+                
+                local heartPoint = getHeartPoint(data.angle, center, radius)
+                -- Yükseklik dalgalanması
+                local yOffset = height * 0.3 * math.sin(time * 2 + data.angle)
+                targetPos = Vector3.new(heartPoint.X, center.Y + yOffset, heartPoint.Z)
+            end
+            
+            -- Part'i hedefe çek
+            local direction = (targetPos - part.Position).unit
+            part.Velocity = direction * attractionStrength
         else
+            -- Part yok olmuşsa veriyi temizle
             partData[part] = nil
         end
     end
 end)
 
--- Bildirim
-game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = "Kalp Hortum",
-    Text = "Basit versiyon yüklendi",
+-- ========== Buton işlevleri ==========
+button.MouseButton1Click:Connect(function()
+    enabled = not enabled
+    if enabled then
+        button.Text = "Hortum Açık"
+        button.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    else
+        button.Text = "Hortum Kapalı"
+        button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    end
+end)
+
+modeButton.MouseButton1Click:Connect(function()
+    if mode == "Tornado" then
+        mode = "Heart"
+        modeButton.Text = "Mod: Kalp"
+    else
+        mode = "Tornado"
+        modeButton.Text = "Mod: Tornado"
+    end
+end)
+
+-- ========== Bildirim ==========
+StarterGui:SetCore("SendNotification", {
+    Title = "Süper Hortum",
+    Text = "Aktif! Tüm part'ler çekiliyor.",
     Duration = 3
 })
