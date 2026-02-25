@@ -1,18 +1,69 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 
 local LocalPlayer = Players.LocalPlayer
-
--- Karakterin yüklenmesini bekle
 local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
--- Tüm part'leri topla
+-- Basit GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "KalpHortum"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 150, 0, 50)
+frame.Position = UDim2.new(0.5, -75, 0.5, -25)
+frame.BackgroundColor3 = Color3.new(0, 0, 0)
+frame.BackgroundTransparency = 0.5
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.Parent = screenGui
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(1, -10, 1, -10)
+button.Position = UDim2.new(0, 5, 0, 5)
+button.Text = "Kalp Hortum AÇIK"
+button.TextColor3 = Color3.new(1, 1, 1)
+button.BackgroundColor3 = Color3.new(0, 1, 0)
+button.BackgroundTransparency = 0.3
+button.BorderSizePixel = 0
+button.Parent = frame
+
+-- Minimize butonu
+local minBtn = Instance.new("TextButton")
+minBtn.Size = UDim2.new(0, 20, 0, 20)
+minBtn.Position = UDim2.new(1, -25, 0, 5)
+minBtn.Text = "-"
+minBtn.TextColor3 = Color3.new(1, 1, 1)
+minBtn.BackgroundColor3 = Color3.new(1, 0, 0)
+minBtn.BorderSizePixel = 0
+minBtn.Parent = frame
+
+local minimized = false
+minBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        frame:TweenSize(UDim2.new(0, 30, 0, 30), "Out", "Quad", 0.2)
+        button.Visible = false
+        minBtn.Text = "+"
+        minBtn.Position = UDim2.new(0, 5, 0, 5)
+    else
+        frame:TweenSize(UDim2.new(0, 150, 0, 50), "Out", "Quad", 0.2)
+        button.Visible = true
+        minBtn.Text = "-"
+        minBtn.Position = UDim2.new(1, -25, 0, 5)
+    end
+end)
+
+-- Part toplama
 local parts = {}
 local function addPart(part)
     if part:IsA("BasePart") and not part.Anchored and part:IsDescendantOf(Workspace) then
-        -- Karakterin kendi part'lerini alma
+        -- Karakterin part'lerini alma
         if part:IsDescendantOf(LocalPlayer.Character) then return end
         table.insert(parts, part)
     end
@@ -24,14 +75,7 @@ end
 
 Workspace.DescendantAdded:Connect(addPart)
 
--- Her part için bir açı ve hız
-local partData = {}
-local radius = 40
-local height = 30
-local speed = 2
-local attraction = 1000
-
--- Kalp noktası hesapla (içi boş kalp çizgisi)
+-- Kalp fonksiyonu
 local function getHeartPoint(t, center, scale)
     local s = scale / 12
     local x = 16 * math.sin(t)^3 * s
@@ -39,45 +83,64 @@ local function getHeartPoint(t, center, scale)
     return Vector3.new(center.X + x, center.Y, center.Z + z)
 end
 
--- Animasyon döngüsü
+-- Her part için veri
+local partData = {}
+local radius = 50
+local height = 30
+local speed = 2
+local attraction = 1000
+local enabled = true
+
+button.MouseButton1Click:Connect(function()
+    enabled = not enabled
+    if enabled then
+        button.Text = "Kalp Hortum AÇIK"
+        button.BackgroundColor3 = Color3.new(0, 1, 0)
+    else
+        button.Text = "Kalp Hortum KAPALI"
+        button.BackgroundColor3 = Color3.new(1, 0, 0)
+    end
+end)
+
 RunService.Heartbeat:Connect(function()
+    if not enabled then return end
+    
     local center = humanoidRootPart.Position
     local time = tick()
     
-    -- Yeni part'lar için veri oluştur
+    -- Yeni part'lar için veri
     for _, part in pairs(parts) do
-        if not partData[part] and part.Parent then
-            partData[part] = {
-                angle = math.random() * 2 * math.pi,
-                speed = 0.5 + math.random() * 1.5
-            }
+        if part.Parent and not part.Anchored then
+            if not partData[part] then
+                partData[part] = {
+                    angle = math.random() * 2 * math.pi,
+                    speed = 0.5 + math.random() * 1.5
+                }
+            end
+        else
+            partData[part] = nil
         end
     end
     
-    -- Her part'ı hareket ettir
+    -- Hareket
     for part, data in pairs(partData) do
         if part.Parent and not part.Anchored then
-            -- Açıyı güncelle (dönme efekti)
             data.angle = data.angle + math.rad(speed * data.speed)
             if data.angle > 2 * math.pi then data.angle = data.angle - 2 * math.pi end
             
-            -- Hedef noktayı hesapla (kalp üzerinde)
             local heartPoint = getHeartPoint(data.angle, center, radius)
-            -- Yükseklik dalgalanması (isteğe bağlı)
             heartPoint = Vector3.new(heartPoint.X, center.Y + height * math.sin(time * 2 + data.angle), heartPoint.Z)
             
-            -- Part'i hedefe çek
-            local direction = (heartPoint - part.Position).unit
-            part.Velocity = direction * attraction
+            part.Velocity = (heartPoint - part.Position).unit * attraction
         else
-            partData[part] = nil -- part yoksa temizle
+            partData[part] = nil
         end
     end
 end)
 
--- Bildirim (isteğe bağlı)
+-- Bildirim
 game:GetService("StarterGui"):SetCore("SendNotification", {
     Title = "Kalp Hortum",
-    Text = "Aktif!",
+    Text = "Basit versiyon yüklendi",
     Duration = 3
 })
